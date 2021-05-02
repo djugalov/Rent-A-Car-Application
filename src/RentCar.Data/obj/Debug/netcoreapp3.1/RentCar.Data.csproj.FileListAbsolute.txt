@@ -1,9 +1,0 @@
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\bin\Debug\netcoreapp3.1\RentCar.Data.deps.json
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\bin\Debug\netcoreapp3.1\RentCar.Data.dll
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\bin\Debug\netcoreapp3.1\RentCar.Data.pdb
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\obj\Debug\netcoreapp3.1\RentCar.Data.csprojAssemblyReference.cache
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\obj\Debug\netcoreapp3.1\RentCar.Data.AssemblyInfoInputs.cache
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\obj\Debug\netcoreapp3.1\RentCar.Data.AssemblyInfo.cs
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\obj\Debug\netcoreapp3.1\RentCar.Data.csproj.CoreCompileInputs.cache
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\obj\Debug\netcoreapp3.1\RentCar.Data.dll
-C:\Users\user\source\repos\RentCar\src\RentCar.Data\obj\Debug\netcoreapp3.1\RentCar.Data.pdb
