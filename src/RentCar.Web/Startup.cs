@@ -40,7 +40,7 @@ namespace RentCar.Web
 
             services.AddControllersWithViews();
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<RentCarWebContext>();
 
             // In production, the React files will be served from this directory
