@@ -56,5 +56,7 @@ namespace RentCar.Web.Controllers
                 return NotFound($"We couldn't get information for the selected user: {e.Message}");
             }
         }
+        [HttpGet]
+        public bool IsUserLoggedIn() => _userService.IsUserLoggedIn();
     }
 }

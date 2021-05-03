@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RentCar.BL.Contracts;
@@ -15,10 +16,20 @@ namespace RentCar.BL.Services
     {
         private readonly IMapper _mapper;
         private readonly RentCarWebContext _context;
-        public UserService(IMapper mapper, RentCarWebContext context)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UserService(IMapper mapper, 
+            RentCarWebContext context, 
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager,
+            IHttpContextAccessor httpContextAccessor)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _mapper = mapper;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IReadOnlyCollection<GetUserDTO>> GetAllUsers()
@@ -56,6 +67,11 @@ namespace RentCar.BL.Services
                 return editedUser.Id;
             }
             throw new NullReferenceException();
+        }
+
+        public bool IsUserLoggedIn()
+        {
+            return _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
         }
     }
 }
