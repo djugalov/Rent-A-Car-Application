@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, Segment } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
+import { Redirect, Route } from 'react-router';
+import { VehiclesList } from '../vehiclesList/vehiclesList';
 
 export const Header = inject('RootStore')(observer(({ RootStore }) => {
 
     const [activeItem, setActiveItem] = useState("home");
 
+    useEffect(()=>{
+        console.log(window.location.pathname.slice(1))
+        if(window.location.pathname === '/'){
+            setActiveItem('home');
+        }else{
+            setActiveItem(window.location.pathname.slice(1));
+        }
+    }, [])
+
     const handleItemClick = (name) => setActiveItem(name);
+
+    const handleBookVehicleClick = () => window.location.pathname = '/book';
 
     const handleAuthClick = (name) => {
         setActiveItem(name);
@@ -46,7 +59,7 @@ export const Header = inject('RootStore')(observer(({ RootStore }) => {
                 <Menu.Item
                     name='Book a Car'
                     active={activeItem === 'book'}
-                    onClick={() => handleItemClick("book")}
+                    onClick={() => handleBookVehicleClick()}
                 />
                 <Menu.Menu position='right'>
                     {renderNavItemsBasedOnUserAuth()}

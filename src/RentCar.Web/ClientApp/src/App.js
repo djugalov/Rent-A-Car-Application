@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import Layout from './components/Layout';
 import './custom.css'
 
 export default class App extends Component {
   static displayName = App.name;
 
-  render () {
+  render() {
     return (
-      <Layout/>
+      <BrowserRouter>
+        <Layout />
+      </BrowserRouter>
     );
   }
 }
