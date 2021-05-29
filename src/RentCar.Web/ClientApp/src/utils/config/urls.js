@@ -3,8 +3,11 @@ const Urls = (()=>{
 
     const isUserLoggedIn = `${baseUrl}api/user/IsUserLoggedIn`;
 
+    const getAllVehicles = `${baseUrl}api/vehicle/getAllVehicles`;
+
     return{
-        isUserLoggedIn
+        isUserLoggedIn,
+        getAllVehicles
     }
 })();
 

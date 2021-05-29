@@ -11,9 +11,12 @@ const Ajax = (()=>{
     };
 
     const isUserLoggedIn = (onSuccess, onError) => get(Urls.isUserLoggedIn, onSuccess, onError);
+
+    const getAllVehicles = (onSuccess, onError) => get(Urls.getAllVehicles, onSuccess, onError);
     
     return{
-        isUserLoggedIn
+        isUserLoggedIn,
+        getAllVehicles
     }
 })();
 
