@@ -13,6 +13,7 @@ namespace RentCar.BL.AutoMapperMappings
             CreateMap<Vehicle, EditVehicleDTO>().ReverseMap();
             CreateMap<ApplicationUser, GetUserDTO>().ForMember(dest => dest.FullName, opt => opt.MapFrom(x => x.GetFullName())).ReverseMap();
             CreateMap<ApplicationUser, EditUserDTO>().ReverseMap();
+            CreateMap<ApplicationUser, UserInfoDTO>().ReverseMap();
         }
     }
 }
