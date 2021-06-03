@@ -38,11 +38,14 @@ const Helpers = (() => {
         return isValid;
     }
 
+    const getKeyByValue = (obj, val) => Object.keys(obj).find(k => obj[k] === val);
+
     return {
         formatTime,
         getDiscountPercentage,
         calculateTotalDays,
-        isStateValid
+        isStateValid,
+        getKeyByValue
     }
 })();
 
