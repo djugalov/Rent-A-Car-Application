@@ -10,6 +10,7 @@ namespace RentCar.BL.Contracts
     {
         public Task AddRentalEvent(Vehicle vehicle, ApplicationUser customer, BookVehicleDTO bookVehicleDTO);
         public Task<IReadOnlyCollection<RentalEvent>> GetRentalEventsInDateRange(int days);
+        public Task<IReadOnlyCollection<ExpiredRentalEventDTO>> GetExpiredRentalEvents();
         Task CreateEvent(BookVehicleDTO bookVehicleDTO);
     }
 }

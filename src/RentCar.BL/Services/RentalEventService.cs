@@ -4,6 +4,7 @@ using RentCar.Data;
 using RentCar.Data.DTOs;
 using RentCar.Data.Models;
 using RentCar.Web.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +27,8 @@ namespace RentCar.BL.Services
                 Customer = customer,
                 Vehicle = vehicle,
                 StartDate = bookVehicleDTO.StartDate,
-                EndDate = bookVehicleDTO.EndDate
+                EndDate = bookVehicleDTO.EndDate,
+                IsActive = true
             };
             rentalEvent.TotalRentalEventPrice = _helper.TotalPriceCalculator(rentalEvent);
             await _context.RentalEvents.AddAsync(rentalEvent);
@@ -37,10 +39,41 @@ namespace RentCar.BL.Services
         {
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == bookVehicleDTO.VehicleID);
             var customer = await _context.Users.FirstOrDefaultAsync(x => x.Id == bookVehicleDTO.UserID);
-            if (vehicle != null && customer != null)
+            try
             {
-                await AddRentalEvent(vehicle, customer, bookVehicleDTO);
-                await _context.SaveChangesAsync();
+                if (vehicle != null && customer != null)
+                {
+                    await AddRentalEvent(vehicle, customer, bookVehicleDTO);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<IReadOnlyCollection<ExpiredRentalEventDTO>> GetExpiredRentalEvents()
+        {
+            try
+            {
+                var expiredRentalEvents = await _context.RentalEvents
+                    .Where(x => x.EndDate < DateTime.Now && x.IsActive)
+                    .Select(x => new ExpiredRentalEventDTO
+                    {
+                        VehicleID = x.Vehicle.ID,
+                        VehicleDescription = "Test",
+                        RentalEventStartDate = x.StartDate,
+                        RentalEventEndDate = x.EndDate
+                    })
+                    .ToListAsync();
+
+                return expiredRentalEvents;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 

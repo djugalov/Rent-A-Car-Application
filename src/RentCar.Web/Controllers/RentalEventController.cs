@@ -2,6 +2,7 @@
 using RentCar.BL.Contracts;
 using RentCar.Data.DTOs;
 using RentCar.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,10 +20,31 @@ namespace RentCar.Web.Controllers
 
         [HttpGet]
         public async Task<IReadOnlyCollection<RentalEvent>> GetRentalEventsInDateRange(int days) => await _rentalEventService.GetRentalEventsInDateRange(days);
+
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyCollection<ExpiredRentalEventDTO>>> GetExpiredRentalEvents()
+        {
+            try
+            {
+                var expiredRentalEvents = await _rentalEventService.GetExpiredRentalEvents();
+                return Ok(expiredRentalEvents);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        } 
         [HttpPost]
         public IActionResult AddRentalEvent(BookVehicleDTO bookVehicleDTO)
         {
-            return Ok(_rentalEventService.CreateEvent(bookVehicleDTO));
+            try
+            {
+                return Ok(_rentalEventService.CreateEvent(bookVehicleDTO));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
