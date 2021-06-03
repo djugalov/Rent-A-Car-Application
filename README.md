@@ -15,8 +15,8 @@ Before you begin, ensure you have met the following requirements:
 
 To explore all functionalities of Rent a Car Application, follow these steps:
 
-*Login with the initially seeded user marked as Admin - admin@test.demo/Admin1!
-*Sign up if you want to test the app with user not marked as admin
+* Login with the initially seeded user marked as Admin - admin@test.demo/Admin1!
+* Sign up if you want to test the app with user not marked as admin
 
 NOTE!
 For the purpose of the project the user is marked as admin through a boolean flag on DB level, no RBAC is configured
