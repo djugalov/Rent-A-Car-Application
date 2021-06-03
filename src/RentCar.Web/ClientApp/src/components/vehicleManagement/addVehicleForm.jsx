@@ -12,8 +12,8 @@ const AddVehicleForm = inject('RootStore')(observer(({ RootStore, ...props }) =>
     const [model, setModel] = useState(props.isEdit ? props.vehicle.model : "");
     const [price, setPrice] = useState(props.isEdit ? props.vehicle.pricePerDay : "");
     const [image, setImage] = useState(props.isEdit ? props.vehicle.imageLink : "");
-    const [fuelType, setFuelType] = useState(null);
-    const [vehicleType, setVehicleType] = useState(null);
+    const [fuelType, setFuelType] = useState(props.isEdit ? Helpers.getKeyByValue(Enums.fuelTypes, props.vehicle.fuelType) : null);
+    const [vehicleType, setVehicleType] = useState(props.isEdit ? Helpers.getKeyByValue(Enums.vehicleTypes, props.vehicle.vehicleType) : null);
     const [numberOfSeats, setNumberOfSeats] = useState(props.isEdit ? props.vehicle.seats : "");
     const [isStateValid, setIsStateValid] = useState(true);
 
@@ -23,8 +23,8 @@ const AddVehicleForm = inject('RootStore')(observer(({ RootStore, ...props }) =>
     const onChangeModel = (event, data) => setModel(data.value);
     const onChangePrice = (event, data) => setPrice(data.value);
     const onChangeImage = (event, data) => setImage(data.value);
-    const onChangeFuelType = (event, data) => setFuelType(data.value);
-    const onChangeVehicleType = (event, data) => setVehicleType(data.value);
+    const onChangeFuelType = (event, data) => setFuelType(Helpers.getKeyByValue(Enums.fuelTypes, data.value));
+    const onChangeVehicleType = (event, data) => setVehicleType(Helpers.getKeyByValue(Enums.vehicleTypes, data.value));
     const onChangeNumberOfSeats = (event, data) => setNumberOfSeats(data.value);
 
     const clickHandler = () => {
@@ -35,8 +35,8 @@ const AddVehicleForm = inject('RootStore')(observer(({ RootStore, ...props }) =>
             numberOfSeats: numberOfSeats,
             pricePerDay: price,
             imageLink: image,
-            fuelType: fuelType,
-            vehicleType: vehicleType
+            fuelType: Enums.fuelTypes[fuelType],
+            vehicleType: Enums.vehicleTypes[vehicleType]
         };
 
         if (!Helpers.isStateValid(addVehicleDto)) {
@@ -47,7 +47,9 @@ const AddVehicleForm = inject('RootStore')(observer(({ RootStore, ...props }) =>
                 RootStore.vehicleStore.editVehicle(addVehicleDto);
             }
             else RootStore.vehicleStore.addVehicle(addVehicleDto);
-            RootStore.vehicleStore.setRenderVehicleForm(!RootStore.vehicleStore.renderAddVehicleForm)
+            if(!props.isEdit){
+                RootStore.vehicleStore.setRenderVehicleForm(!RootStore.vehicleStore.renderAddVehicleForm)
+            }
         }
     }
 
@@ -105,7 +107,7 @@ const AddVehicleForm = inject('RootStore')(observer(({ RootStore, ...props }) =>
                                 control={Radio}
                                 label={x}
                                 value={Enums.fuelTypes[x]}
-                                checked={fuelType === Enums.fuelTypes[x]}
+                                checked={Enums.fuelTypes[fuelType] === Enums.fuelTypes[x]}
                                 onChange={onChangeFuelType}
                             />)}
                         </Form.Group>
@@ -115,7 +117,7 @@ const AddVehicleForm = inject('RootStore')(observer(({ RootStore, ...props }) =>
                                 control={Radio}
                                 label={x}
                                 value={Enums.vehicleTypes[x]}
-                                checked={vehicleType === Enums.vehicleTypes[x]}
+                                checked={Enums.vehicleTypes[vehicleType] === Enums.vehicleTypes[x]}
                                 onChange={onChangeVehicleType}
                             />)}
                         </Form.Group>
