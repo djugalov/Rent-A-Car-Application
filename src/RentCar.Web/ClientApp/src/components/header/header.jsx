@@ -1,48 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Segment } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
-import { Redirect, Route } from 'react-router';
-import { VehiclesList } from '../vehiclesList/vehiclesList';
+import { Link } from 'react-router-dom';
+import Enums from '../../utils/helpers/enums';
 
 export const Header = inject('RootStore')(observer(({ RootStore }) => {
 
-    const [activeItem, setActiveItem] = useState("home");
-
-    useEffect(()=>{
-        console.log(window.location.pathname.slice(1))
-        if(window.location.pathname === '/'){
-            setActiveItem('home');
-        }else{
-            setActiveItem(window.location.pathname.slice(1));
+    useEffect(() => {
+        if (window.location.pathname === '/') {
+            RootStore.vehicleStore.setActiveHeaderItem('home')
+        } else {
+            RootStore.vehicleStore.setActiveHeaderItem(window.location.pathname.slice(1))
         }
-    }, [])
+    })
 
-    const handleItemClick = (name) => setActiveItem(name);
-
-    const handleBookVehicleClick = () => window.location.pathname = '/book';
+    const handleItemClick = (name) => RootStore.vehicleStore.setActiveHeaderItem(name);
 
     const handleAuthClick = (name) => {
-        setActiveItem(name);
         window.location.pathname = name === 'signUp' ? '/identity/account/register' : '/identity/account/login';
     }
 
     const renderNavItemsBasedOnUserAuth = () => {
-        console.log(RootStore.userStore.isUserAuthenticated)
         return RootStore.userStore.isUserAuthenticated ?
             <Menu.Item
+                as={Link}
+                to='myAccount'
                 name='My Account'
-                active={activeItem === 'myAccount'}
+                active={RootStore.vehicleStore.activeHeaderItem === 'myAccount'}
                 onClick={() => handleItemClick("myAccount")}
             /> :
             <>
                 <Menu.Item
                     name='Sign In'
-                    active={activeItem === 'signIn'}
+                    active={RootStore.vehicleStore.activeHeaderItem === 'signIn'}
                     onClick={() => handleAuthClick("signIn")}
                 />
                 <Menu.Item
                     name='Sign Up'
-                    active={activeItem === 'signUp'}
+                    active={RootStore.vehicleStore.activeHeaderItem === 'signUp'}
                     onClick={() => handleAuthClick("signUp")}
                 />
             </>
@@ -51,16 +46,14 @@ export const Header = inject('RootStore')(observer(({ RootStore }) => {
     return (
         <Segment inverted>
             <Menu inverted pointing secondary>
-                <Menu.Item
-                    name='home'
-                    active={activeItem === 'home'}
-                    onClick={() => handleItemClick("home")}
-                />
-                <Menu.Item
-                    name='Book a Car'
-                    active={activeItem === 'book'}
-                    onClick={() => handleBookVehicleClick()}
-                />
+                {Enums.navMenuItems.filter(x =>!x.isAdminItem || x.isAdminItem===RootStore.userStore.currentUser.isAdmin).map(x => <Menu.Item
+                    key={x.name}
+                    as={Link}
+                    to={`${x.activeLink}`}
+                    name={x.name}
+                    active={RootStore.vehicleStore.activeHeaderItem === x.activeLink}
+                    onClick={() => handleItemClick(x.activeLink)}
+                />)}
                 <Menu.Menu position='right'>
                     {renderNavItemsBasedOnUserAuth()}
                 </Menu.Menu>
