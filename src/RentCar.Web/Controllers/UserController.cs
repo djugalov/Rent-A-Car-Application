@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RentCar.BL.Contracts;
+using RentCar.Data;
 using RentCar.Data.DTOs;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace RentCar.Web.Controllers
         [HttpGet]
         public async Task<IReadOnlyCollection<GetUserDTO>> GetAllUsers() => await _userService.GetAllUsers();
         [HttpGet]
-        public async Task<ActionResult<GetUserDTO>> GetUserByID(string id)
+        public async Task<ActionResult<UserInfoDTO>> GetUserByID(string id)
         {
             try
             {
@@ -32,24 +33,24 @@ namespace RentCar.Web.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult<string>> EditUser(EditUserDTO editUserDTO)
+        public async Task<ActionResult<UserInfoDTO>> EditUser(EditUserDTO editUserDTO)
         {
             try
             {
                 return await _userService.EditUser(editUserDTO);
             }
-            catch (NullReferenceException e)
+            catch (Exception e)
             {
                 return NotFound($"We couldn't find the selected user: {e.Message}");
             }
         }
         [HttpPost]
-        public async Task<ActionResult<string>> DeleteUser(string id)
+        public async Task<ActionResult<string>> DeleteUser(BaseDeleteUserDto baseDeleteDTO)
         {
             try
             {
                 // this will perform soft delete for the selected user
-                return await _userService.DeleteUser(id);
+                return await _userService.DeleteUser(baseDeleteDTO.ID);
             }
             catch (NullReferenceException e)
             {
@@ -58,5 +59,19 @@ namespace RentCar.Web.Controllers
         }
         [HttpGet]
         public bool IsUserLoggedIn() => _userService.IsUserLoggedIn();
+
+        [HttpGet]
+        public async Task<ActionResult<UserInfoDTO>> GetCurrentUser()
+        {
+            try
+            {
+                var user = await _userService.GetCurrentUser();
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

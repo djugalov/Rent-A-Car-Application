@@ -8,7 +8,9 @@ using RentCar.Data.DTOs;
 using RentCar.Web.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace RentCar.BL.Services
 {
@@ -19,9 +21,9 @@ namespace RentCar.BL.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(IMapper mapper, 
-            RentCarWebContext context, 
-            UserManager<ApplicationUser> userManager, 
+        public UserService(IMapper mapper,
+            RentCarWebContext context,
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -34,14 +36,14 @@ namespace RentCar.BL.Services
 
         public async Task<IReadOnlyCollection<GetUserDTO>> GetAllUsers()
         {
-            var applicationUsers = await _context.Users.ToListAsync();
+            var applicationUsers = await _context.Users.Where(x => !x.IsDeleted).ToListAsync();
             return _mapper.Map<IReadOnlyCollection<GetUserDTO>>(applicationUsers);
         }
 
-        public async Task<GetUserDTO> GetUserByID(string id)
+        public async Task<UserInfoDTO> GetUserByID(string id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-            return user != null ? _mapper.Map<GetUserDTO>(user) : throw new NullReferenceException();
+            return user != null ? _mapper.Map<UserInfoDTO>(user) : throw new NullReferenceException();
         }
 
         public async Task<string> DeleteUser(string id)
@@ -56,22 +58,42 @@ namespace RentCar.BL.Services
             throw new NullReferenceException();
         }
 
-        public async Task<string> EditUser(EditUserDTO editUserDTO)
+        public async Task<UserInfoDTO> EditUser(EditUserDTO editUserDTO)
         {
-            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == editUserDTO.ID);
-            if (user != null)
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == editUserDTO.Id);
+            try
             {
-                var editedUser = _mapper.Map<ApplicationUser>(editUserDTO);
-                _context.Users.Update(editedUser);
-                await _context.SaveChangesAsync();
-                return editedUser.Id;
+                if (user != null)
+                {
+                    user.FirstName = editUserDTO.FirstName;
+                    user.MiddleName = editUserDTO.MiddleName;
+                    user.LastName = editUserDTO.LastName;
+                    user.Address = editUserDTO.Address;
+                    user.PhoneNumber = editUserDTO.PhoneNumber;
+
+                    
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                    return _mapper.Map<UserInfoDTO>(user);
+                }
+                throw new NullReferenceException();
             }
-            throw new NullReferenceException();
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public bool IsUserLoggedIn()
         {
+            //var user = await _userManager.FindByNameAsync(_httpContextAccessor.HttpContext.User.Identity.Name);
             return _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+        }
+
+        public async Task<UserInfoDTO> GetCurrentUser()
+        {
+            var user = await _userManager.FindByNameAsync(_httpContextAccessor.HttpContext.User.Identity.Name);
+            return _mapper.Map<UserInfoDTO>(user);
         }
     }
 }
