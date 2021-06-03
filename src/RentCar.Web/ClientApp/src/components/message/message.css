@@ -1,0 +1,134 @@
+.system-message {
+    font-weight: 100;
+    position: absolute;
+    font-size: 1vw;
+    top: 5%;
+    right: 1%;
+    width: 20%;
+    transition: ease-in 0.2s;
+    box-shadow: 3px 3px 10px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    height: 7%;
+    display: flex;
+}
+​
+.system-error-message {
+    color: rgb(191, 38, 0);
+    background-color: rgb(255, 235, 230);
+    min-height: 75px;
+}
+​
+.system-success-message {
+    color: rgb(0, 102, 68);
+    background-color: rgb(227, 252, 239);
+}
+​
+.system-info-message {
+    color: rgba(78, 136, 212, 1);
+    background-color: rgba(214, 227, 245, 1);
+}
+​
+.system-message-text {
+    font-weight: 100;
+    width: 80%;
+    display: inline-block;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    display: inline-block;
+    color: inherit;
+    font-size: 0.8vw;
+}
+​
+.system-message-text:focus {
+    outline: none;
+}
+​
+.system-error-message i {
+    color: #d41c1c;
+}
+​
+.system-success-message i {
+    color: rgb(0, 102, 68);
+}
+​
+.system-error-message i:hover,
+.system-success-message i:hover {
+    color: rgb(120, 120, 120);
+}
+​
+.system-message-icon {
+    cursor: pointer;
+    transition: ease-in 0.2s;
+    position: absolute;
+    left: 94%;
+    top: 8%;
+    transform: scale(0.7);
+}
+​
+.system-error-message-first-section {
+    position: relative;
+    display: inline-block;
+    background-color: rgb(255, 86, 48);
+    width: 8%;
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+}
+​
+.system-success-message-first-section {
+    position: relative;
+    display: inline-block;
+    background-color: rgb(54, 179, 126);
+    width: 8%;
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+}
+​
+.system-info-message-first-section {
+    position: relative;
+    display: inline-block;
+    background-color: rgba(78, 136, 212, 1);
+    width: 8%;
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+}
+​
+.system-message-last-section {
+    display: inline-block;
+    width: 10%;
+    height: 100%;
+    border-radius: 0 5px 5px 0;
+}
+​
+.system-error-message-first-section .fa-exclamation {
+    position: absolute;
+    left: 40%;
+    top: 35%;
+    color: rgb(255, 235, 230);
+}
+​
+.system-error-message-first-section .fa-exclamation:hover {
+    color: rgb(255, 235, 230);
+}
+​
+.system-success-message-first-section .fa-check {
+    position: absolute;
+    left: 20%;
+    top: 35%;
+    color: rgb(227, 252, 239);
+}
+​
+.system-success-message-first-section .fa-check:hover {
+    color: rgb(227, 252, 239);
+}
+​
+.system-info-message-first-section .fa-info {
+    position: absolute;
+    left: 40%;
+    top: 35%;
+    color: rgba(214, 227, 245, 1);
+}
+​
+.system-info-message-first-section .fa-info:hover {
+    color: rgba(214, 227, 245, 1);
+}
