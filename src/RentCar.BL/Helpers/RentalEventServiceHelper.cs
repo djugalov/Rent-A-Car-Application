@@ -10,6 +10,10 @@ namespace RentCar.BL.Helpers
         public decimal TotalPriceCalculator(RentalEvent rentalEvent)
         {
             var daysRented = (rentalEvent.EndDate - rentalEvent.StartDate).TotalDays;
+            if (daysRented == 0)
+            {
+                daysRented = 1;
+            }
             var basePrice = GetBasePrice(daysRented, rentalEvent.Vehicle.PricePerDay);
             var discount = GetDiscountPercentage(daysRented, rentalEvent.Customer.IsVip);
             return GetDiscountedPrice(basePrice, discount);
