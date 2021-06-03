@@ -9,32 +9,35 @@ import BookVehicleForm from '../bookVehicle/bookVehicleForm';
 const VehiclesList = inject('RootStore')(observer(({ RootStore }) => {
 
     useEffect(() => {
-        RootStore.vehicleStore.getAllVehicles();
+        RootStore.vehicleStore.getAllAvailableVehicles();
     }, [RootStore.vehicleStore])
 
     const tableRef = React.useRef();
 
-    const getRowsData = () => RootStore.vehicleStore.allVehicles.map(x => ({
+    const getRowsData = () => RootStore.vehicleStore.allAvailableVehicles.map(x => ({
+        id: x.id,
         brand: x.brand,
         model: x.model,
         constructionDate: Helpers.formatTime(x.constructionDate),
-        seats: x.numberOfSeats
+        seats: x.numberOfSeats,
+        pricePerDay: x.pricePerDay,
+        imageLink: x.imageLink
     }));
 
-    const renderForm = () => <BookVehicleForm/>
+    const renderForm = (rowData) => <BookVehicleForm vehicle={rowData} />
 
     return (
         <>
             <MaterialTable
-            tableRef = {tableRef}
+                tableRef={tableRef}
                 title={"Currently available cars"}
                 columns={Enums.vehicleListColumns}
                 options={Enums.materialTableOptions}
                 data={getRowsData()}
-                detailPanel = {[
+                detailPanel={[
                     {
-                        icon: ()=> null,
-                        openIcon: ()=> null,
+                        icon: () => null,
+                        openIcon: () => null,
                         disabled: true,
                         render: rowData => {
                             return renderForm(rowData)
