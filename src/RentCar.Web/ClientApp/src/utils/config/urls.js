@@ -1,6 +1,6 @@
 const Urls = (()=>{
 
-    const baseUrl = 'https://localhost:5001/';
+    const baseUrl = 'https://localhost:44313/';
 
     const isUserLoggedIn = `${baseUrl}api/user/IsUserLoggedIn`;
 
