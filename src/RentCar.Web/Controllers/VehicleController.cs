@@ -21,13 +21,18 @@ namespace RentCar.Web.Controllers
         public async Task<Vehicle> GetVehicleByID(Guid id) => await _service.GetVehicleById(id);
         [HttpGet]
         public async Task<IReadOnlyCollection<Vehicle>> GetAllVehicles() => await _service.GetAllVehicles();
+        [HttpGet]
+        public async Task<IReadOnlyCollection<Vehicle>> GetAllAvailableVehicles() => await _service.GetAllAvailableVehicles();
+        //TO DO change return type to Vehicle
         [HttpPost]
-        public async Task<Guid> AddVehicle(AddNewVehicleDTO addNewVehicleDTO) => await _service.AddVehicle(addNewVehicleDTO);
+        public async Task<Vehicle> AddVehicle(AddNewVehicleDTO addNewVehicleDTO) => await _service.AddVehicle(addNewVehicleDTO);
+        [HttpPost]
+        public async Task<Guid> MarkAsAvailable(BaseDTO baseDto) => await _service.MarkAsAvailable(baseDto.ID);
         [HttpPost]
         public async Task<Guid> BookVehicle(BookVehicleDTO bookVehicleDTO) => await _service.BookVehicle(bookVehicleDTO);
         [HttpPost]
-        public async Task<Guid> EditVehicle(EditVehicleDTO editVehicleDTO) => await _service.EditVehicle(editVehicleDTO);
+        public async Task<Vehicle> EditVehicle(EditVehicleDTO editVehicleDTO) => await _service.EditVehicle(editVehicleDTO);
         [HttpPost]
-        public async Task<Guid> DeleteVehicle(Guid id) => await _service.DeleteVehicle(id);
+        public async Task<Guid> DeleteVehicle(BaseDTO baseDeleteDTO) => await _service.DeleteVehicle(baseDeleteDTO.ID);
     }
 }
