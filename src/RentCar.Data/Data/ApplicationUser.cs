@@ -24,6 +24,8 @@ namespace RentCar.Data
         public bool IsVip { get; set; }
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
+        [Column("is_admin")]
+        public bool IsAdmin { get; set; } = false;
         public virtual ICollection<RentalEvent> RentalEvents { get; set; }
 
         public string GetFullName() => $"{FirstName} {MiddleName} {LastName}";

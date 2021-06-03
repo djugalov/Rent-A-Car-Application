@@ -19,5 +19,7 @@ namespace RentCar.Data.Models
         public virtual ApplicationUser Customer { get; set; }
         [ForeignKey("vehicle_id")]
         public virtual Vehicle Vehicle { get; set; }
+        [Column("is_active")]
+        public bool IsActive { get; set; }
     }
 }
