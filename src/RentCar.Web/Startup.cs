@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using RentCar.Data;
 using RentCar.Web.Data;
+using RentCar.Data.Data;
 
 namespace RentCar.Web
 {
@@ -27,6 +28,8 @@ namespace RentCar.Web
                 options.UseSqlServer(Configuration.GetConnectionString("RentCarWebContextConnection")));
 
             services.AddSwaggerGen();
+
+            services.AddTransient<AdminSeeder>();
 
             services
                 .AddUserService()
@@ -51,8 +54,16 @@ namespace RentCar.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AdminSeeder seeder)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<RentCarWebContext>();
+                context.Database.EnsureCreated();
+            }
+
+            seeder.SeedAdminUser();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
