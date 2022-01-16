@@ -27,91 +27,78 @@ namespace RentCar.BL.Services
         }
         public async Task<Vehicle> AddVehicle(AddNewVehicleDTO addNewVehicleDTO)
         {
-            try
-            {
-                var vehicle = _mapper.Map<Vehicle>(addNewVehicleDTO);
-                await _context.Vehicles.AddAsync(vehicle);
-                await _context.SaveChangesAsync();
-                return vehicle;
-            }
-            catch (Exception e)
-            {
-                throw new AggregateException(e.Message);
-            }
+            var vehicle = _mapper.Map<Vehicle>(addNewVehicleDTO);
+
+            await _context.Vehicles.AddAsync(vehicle);
+
+            await _context.SaveChangesAsync();
+
+            return vehicle;
         }
 
         public async Task<Guid> MarkAsAvailable(Guid id)
         {
-            try
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == id);
+
+            if (vehicle != null)
             {
-                var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == id);
-                if (vehicle != null)
-                {
-                    vehicle.UpdateAvailability();
-                    vehicle.RentalEvents.Select(x => x.IsActive = false);
-                }
-                _context.SaveChanges();
-                return vehicle.ID;
+                vehicle.UpdateAvailability();
+
+                vehicle.RentalEvents.Select(x => x.IsActive = false);
             }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            _context.SaveChanges();
+
+            return vehicle.ID;
         }
 
         public async Task<Guid> BookVehicle(BookVehicleDTO bookVehicleDTO)
         {
-            try
-            {
-                var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == bookVehicleDTO.VehicleID && x.IsAvailable);
-                var customer = await _context.Users.FirstOrDefaultAsync(x => x.Id == bookVehicleDTO.UserID);
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == bookVehicleDTO.VehicleID && x.IsAvailable);
 
-                if (vehicle != null && customer != null)
+            var customer = await _context.Users.FirstOrDefaultAsync(x => x.Id == bookVehicleDTO.UserID);
+
+            if (vehicle != null && customer != null)
+            {
+                vehicle.IsAvailable = false;
+
+                await _rentalEventService.AddRentalEvent(vehicle, customer, bookVehicleDTO);
+
+                var userRentalsForVip = await _userRentalService.GetCustomersRentalEventsForTimeRange(customer.Id, Constants.RentalEventDaysForVip);
+
+                if (userRentalsForVip.Count >= Constants.MinRentalEventsForVip)
                 {
-                    vehicle.IsAvailable = false;
-                    await _rentalEventService.AddRentalEvent(vehicle, customer, bookVehicleDTO);
-
-                    var userRentalsForVip = await _userRentalService.GetCustomersRentalEventsForTimeRange(customer.Id, Constants.RentalEventDaysForVip);
-
-                    if (userRentalsForVip.Count >= Constants.MinRentalEventsForVip)
-                    {
-                        customer.IsVip = true;
-                    }
-
-                    await _context.SaveChangesAsync();
-                    return vehicle.ID;
+                    customer.IsVip = true;
                 }
-                throw new NullReferenceException();
+
+                await _context.SaveChangesAsync();
+
+                return vehicle.ID;
             }
-            catch (Exception)
-            {
-                throw new AggregateException();
-            }
+
+            return default;
         }
 
         public async Task<Vehicle> EditVehicle(EditVehicleDTO editVehicleDTO)
         {
             var vehicle = await _context.Vehicles.AsNoTracking().FirstOrDefaultAsync(x => x.ID == editVehicleDTO.ID);
+
             if (vehicle != null)
             {
                 var editedVehicle = _mapper.Map<Vehicle>(editVehicleDTO);
+
                 _context.Vehicles.Update(editedVehicle);
+
                 _context.SaveChanges();
+
                 return editedVehicle;
             }
-            throw new NullReferenceException();
+
+            return null;
         }
 
         public async Task<IReadOnlyCollection<Vehicle>> GetAllVehicles()
         {
-            try
-            {
-                return await _context.Vehicles.Where(x => !x.IsDeleted).ToListAsync();
-            }
-            catch (Exception e)
-            {
-                throw new AggregateException(e.Message);
-            }
+            return await _context.Vehicles.Where(x => !x.IsDeleted).ToListAsync();
         }
 
         public async Task<Vehicle> GetVehicleById(Guid id)
@@ -120,31 +107,28 @@ namespace RentCar.BL.Services
 
             if (vehicle == null)
             {
-                throw new NullReferenceException();
+                return null;
             }
+
             return vehicle;
         }
         public async Task<Guid> DeleteVehicle(Guid vehicleID)
         {
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == vehicleID);
+
             if (vehicle != null)
             {
                 vehicle.IsDeleted = true;
+
                 await _context.SaveChangesAsync();
             }
+
             return vehicle.ID;
         }
 
         public async Task<IReadOnlyCollection<Vehicle>> GetAllAvailableVehicles()
         {
-            try
-            {
-                return await _context.Vehicles.Where(x => x.IsAvailable && !x.IsDeleted).ToListAsync();
-            }
-            catch (Exception e)
-            {
-                throw new AggregateException(e.Message);
-            }
+            return await _context.Vehicles.Where(x => x.IsAvailable && !x.IsDeleted).ToListAsync();
         }
     }
 }
