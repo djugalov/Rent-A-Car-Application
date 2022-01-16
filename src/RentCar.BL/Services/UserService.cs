@@ -43,7 +43,7 @@ namespace RentCar.BL.Services
         public async Task<UserInfoDTO> GetUserByID(string id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-            return user != null ? _mapper.Map<UserInfoDTO>(user) : throw new NullReferenceException();
+            return user != null ? _mapper.Map<UserInfoDTO>(user) : null;
         }
 
         public async Task<string> DeleteUser(string id)
@@ -55,33 +55,28 @@ namespace RentCar.BL.Services
                 await _context.SaveChangesAsync();
                 return user.Id;
             }
-            throw new NullReferenceException();
+            return null;
         }
 
         public async Task<UserInfoDTO> EditUser(EditUserDTO editUserDTO)
         {
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == editUserDTO.Id);
-            try
-            {
-                if (user != null)
-                {
-                    user.FirstName = editUserDTO.FirstName;
-                    user.MiddleName = editUserDTO.MiddleName;
-                    user.LastName = editUserDTO.LastName;
-                    user.Address = editUserDTO.Address;
-                    user.PhoneNumber = editUserDTO.PhoneNumber;
 
-                    
-                    _context.Users.Update(user);
-                    _context.SaveChanges();
-                    return _mapper.Map<UserInfoDTO>(user);
-                }
-                throw new NullReferenceException();
-            }
-            catch (Exception e)
+            if (user != null)
             {
-                throw new Exception(e.Message);
+                user.FirstName = editUserDTO.FirstName;
+                user.MiddleName = editUserDTO.MiddleName;
+                user.LastName = editUserDTO.LastName;
+                user.Address = editUserDTO.Address;
+                user.PhoneNumber = editUserDTO.PhoneNumber;
+
+
+                _context.Users.Update(user);
+                _context.SaveChanges();
+                return _mapper.Map<UserInfoDTO>(user);
             }
+
+            return null;
         }
 
         public bool IsUserLoggedIn()
