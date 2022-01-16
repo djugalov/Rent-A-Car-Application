@@ -39,42 +39,29 @@ namespace RentCar.BL.Services
         {
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x => x.ID == bookVehicleDTO.VehicleID);
             var customer = await _context.Users.FirstOrDefaultAsync(x => x.Id == bookVehicleDTO.UserID);
-            try
-            {
-                if (vehicle != null && customer != null)
-                {
-                    await AddRentalEvent(vehicle, customer, bookVehicleDTO);
-                    await _context.SaveChangesAsync();
-                }
-            }
-            catch (Exception e)
-            {
 
-                throw new Exception(e.Message);
+            if (vehicle != null && customer != null)
+            {
+                await AddRentalEvent(vehicle, customer, bookVehicleDTO);
+                await _context.SaveChangesAsync();
             }
+
         }
 
         public async Task<IReadOnlyCollection<ExpiredRentalEventDTO>> GetExpiredRentalEvents()
         {
-            try
-            {
-                var expiredRentalEvents = await _context.RentalEvents
-                    .Where(x => x.EndDate < DateTime.Now && x.IsActive)
-                    .Select(x => new ExpiredRentalEventDTO
-                    {
-                        VehicleID = x.Vehicle.ID,
-                        VehicleDescription = "Test",
-                        RentalEventStartDate = x.StartDate,
-                        RentalEventEndDate = x.EndDate
-                    })
-                    .ToListAsync();
+            var expiredRentalEvents = await _context.RentalEvents
+                .Where(x => x.EndDate < DateTime.Now && x.IsActive)
+                .Select(x => new ExpiredRentalEventDTO
+                {
+                    VehicleID = x.Vehicle.ID,
+                    VehicleDescription = "Test",
+                    RentalEventStartDate = x.StartDate,
+                    RentalEventEndDate = x.EndDate
+                })
+                .ToListAsync();
 
-                return expiredRentalEvents;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            return expiredRentalEvents;
         }
 
         public async Task<IReadOnlyCollection<RentalEvent>> GetRentalEventsInDateRange(int days)

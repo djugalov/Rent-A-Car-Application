@@ -24,27 +24,15 @@ namespace RentCar.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyCollection<ExpiredRentalEventDTO>>> GetExpiredRentalEvents()
         {
-            try
-            {
-                var expiredRentalEvents = await _rentalEventService.GetExpiredRentalEvents();
-                return Ok(expiredRentalEvents);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        } 
+            var expiredRentalEvents = await _rentalEventService.GetExpiredRentalEvents();
+
+            return Ok(expiredRentalEvents);
+        }
         [HttpPost]
         public IActionResult AddRentalEvent(BookVehicleDTO bookVehicleDTO)
         {
-            try
-            {
-                return Ok(_rentalEventService.CreateEvent(bookVehicleDTO));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+
+            return Ok(_rentalEventService.CreateEvent(bookVehicleDTO));
         }
     }
 }
